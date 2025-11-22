@@ -6,9 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -21,8 +18,6 @@ qt_add_qml_module(appaimo_projekt
     QML_FILES
         Main.qml
         SOURCES greywolfoptimizer.h greywolfoptimizer.cpp
-        SOURCES
-        SOURCES
         SOURCES opt_params.h
         SOURCES analysis_params.h
 )
