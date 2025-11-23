@@ -37,9 +37,6 @@ target_link_libraries(appaimo_projekt
     PRIVATE Qt6::Quick
 )
 target_link_libraries(appaimo_projekt PRIVATE Qt6::Core)
-target_link_libraries(appaimo_projekt PRIVATE Qt6::Core)
-target_link_libraries(appaimo_projekt PRIVATE Qt6::Core)
-target_link_libraries(appaimo_projekt PRIVATE Qt6::Core)
 
 include(GNUInstallDirs)
 install(TARGETS appaimo_projekt
