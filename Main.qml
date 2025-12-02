@@ -9,7 +9,7 @@ ApplicationWindow {
 
     width: 1024
     height: 720
-    minimumWidth: 500
+    minimumWidth: 550
     minimumHeight: 600
 
     readonly property Palette darkPalette: Palette {
