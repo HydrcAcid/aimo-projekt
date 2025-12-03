@@ -7,9 +7,9 @@ ApplicationWindow {
     visible: true
     title: "Program do optymizacji systemów kolejkowych"
 
-    width: 1024
+    width: 1225
     height: 720
-    minimumWidth: 550
+    minimumWidth: 1225
     minimumHeight: 600
 
     readonly property Palette darkPalette: Palette {
@@ -97,6 +97,10 @@ ApplicationWindow {
                 width: implicitWidth + 10
             }
             TabButton {
+                text: "Porównanie"
+                width: implicitWidth + 10
+            }
+            TabButton {
                 text: "Optymalizacja"
                 width: implicitWidth + 10
             }
@@ -108,6 +112,23 @@ ApplicationWindow {
             Layout.fillHeight: true
 
             Analysis {}
+            RowLayout {
+                spacing: 10
+
+                Analysis {
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 1
+                }
+                Rectangle {
+                    Layout.preferredWidth: 1
+                    Layout.fillHeight: true
+                    color: palette.dark
+                }
+                Optimization {
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 1
+                }
+            }
             Optimization {}
         }
     }
