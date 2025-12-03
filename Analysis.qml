@@ -142,7 +142,7 @@ ColumnLayout {
             SpinBox {
                 visible: calculateProbability.checked
                 Layout.fillWidth: true
-                from: 1
+                from: nls_params.pLB
                 implicitHeight: 24
                 editable: true
                 value: nls_params.pUB
