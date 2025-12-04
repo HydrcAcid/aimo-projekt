@@ -51,14 +51,7 @@ ApplicationWindow {
 
     menuBar: MenuBar {
         Menu {
-            title: "Wybór systemu"
-
-            MenuItem {
-                text: "M/M/m/-/m"
-            }
-        }
-        Menu {
-            title: "Informacje"
+            title: "Wygląd"
 
             MenuItem {
                 checkable: true
