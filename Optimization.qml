@@ -4,7 +4,15 @@ import QtQuick.Controls.Fusion
 import Qt.labs.qmlmodels
 
 ColumnLayout {
-    spacing: 15
+    spacing: 12
+
+    Label {
+        text: "Optymalizacja"
+        font.pixelSize: 30
+        font.bold: true
+        horizontalAlignment: Text.AlignHCenter
+        Layout.fillWidth: true
+    }
 
     RowLayout {
         spacing: 20

@@ -62,7 +62,6 @@ ApplicationWindow {
     }
 
     ColumnLayout {
-        spacing: 15
         anchors.fill: parent
         anchors.margins: 7
 
@@ -109,6 +108,8 @@ ApplicationWindow {
         TableView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.topMargin: 12
+
             interactive: false
             rowSpacing: -1
             columnSpacing: -1
@@ -125,9 +126,9 @@ ApplicationWindow {
             model: TableModel {
                 id: tableModel
                 rows: [
-                    { fullName: "Prawdopodopieństwo", varName: "p0", value1: 1.2, value2: 1.1 },
-                    { fullName: "Prawdopodopieństwo", varName: "p1", value1: 2.2, value2: 2.1 },
-                    { fullName: "Prawdopodopieństwo", varName: "p2", value1: 3.2, value2: 3.1 },
+                    { fullName: "Prawdopodobieństwo", varName: "p0", value1: 1.2, value2: 1.1 },
+                    { fullName: "Prawdopodobieństwo", varName: "p1", value1: 2.2, value2: 2.1 },
+                    { fullName: "Prawdopodobieństwo", varName: "p2", value1: 3.2, value2: 3.1 },
                 ]
 
                 TableModelColumn { display: "fullName" }
