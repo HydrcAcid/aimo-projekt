@@ -62,6 +62,7 @@ ApplicationWindow {
     }
 
     ColumnLayout {
+        spacing: 7
         anchors.fill: parent
         anchors.margins: 7
 
@@ -105,10 +106,42 @@ ApplicationWindow {
             }
         }
 
+        HorizontalHeaderView {
+            syncView: resultsTable
+            clip: true
+            Layout.topMargin: 10
+
+            model: ListModel {
+                ListElement { display: "Nazwa wielkości" }
+                ListElement { display: "Zmienna" }
+                ListElement { display: "System 1" }
+                ListElement { display: "System 2" }
+            }
+
+            delegate: Rectangle {
+                implicitHeight: 30
+                border.width: 1
+                border.color: palette.shadow
+                color: palette.alternateBase
+
+                Text {
+                    text: display
+                    color: palette.text
+                    anchors.fill: parent
+                    anchors.margins: 6
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+            }
+        }
+
         TableView {
+            id: resultsTable
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.topMargin: 12
+            Layout.topMargin: -8
 
             interactive: false
             rowSpacing: -1
@@ -141,7 +174,7 @@ ApplicationWindow {
                 implicitHeight: 30
                 border.width: 1
                 border.color: palette.shadow
-                color: row % 2 ? palette.base : palette.alternateBase
+                color: row % 2 ? palette.alternateBase : palette.base
 
                 Text {
                     text: display
