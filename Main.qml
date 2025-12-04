@@ -138,7 +138,7 @@ ApplicationWindow {
 
         TableView {
             id: resultsTable
-            Layout.fillWidth: true
+            Layout.preferredWidth: parent.width
             Layout.fillHeight: true
             Layout.topMargin: -8
 
