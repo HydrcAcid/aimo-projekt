@@ -108,7 +108,6 @@ ApplicationWindow {
 
         HorizontalHeaderView {
             syncView: resultsTable
-            clip: true
             Layout.topMargin: 10
 
             model: ListModel {
@@ -158,11 +157,6 @@ ApplicationWindow {
 
             model: TableModel {
                 id: tableModel
-                rows: [
-                    { fullName: "Prawdopodobieństwo", varName: "p0", value1: 1.2, value2: 1.1 },
-                    { fullName: "Prawdopodobieństwo", varName: "p1", value1: 2.2, value2: 2.1 },
-                    { fullName: "Prawdopodobieństwo", varName: "p2", value1: 3.2, value2: 3.1 },
-                ]
 
                 TableModelColumn { display: "fullName" }
                 TableModelColumn { display: "varName" }
@@ -183,6 +177,68 @@ ApplicationWindow {
                     anchors.margins: 6
                     verticalAlignment: Text.AlignVCenter
                     font.pixelSize: 12
+                }
+            }
+
+            Connections {
+                target: gwo
+
+                readonly property var keyTranslations: {
+                    "f_obj": "Wynik funkcji celu",
+                    "p0": "Prawdopodobieństwo",
+                    "pm": "Prawdopodobieństwo odmowy",
+                    "a": "Względna zdolnośc obsługi",
+                    "q": "Względna zdolność obsługi",
+                    "n_mean": "Średnia liczba zgłoszeń w systemie",
+                    "m_disp": "Średnia liczba kanałów obsługujących",
+                    "m_empty": "Średnia liczba kanałów niezajętych",
+                    "m_opt": "Optymalna wartość m",
+                }
+
+                function onAnalysisFinished(result) {
+                    const oldRows = tableModel.rows;
+
+                    const varNames = new Set();
+                    for (const row of oldRows) {
+                        varNames.add(row.varName);
+                    }
+                    for (const key in result) {
+                        varNames.add(key);
+                    }
+
+                    const newRows = [];
+                    for (const varName of varNames) {
+                        newRows.push({
+                             fullName: keyTranslations[varName] ?? varName,
+                             varName,
+                             value1: result[varName]?.toString() ?? "-",
+                             value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
+                         });
+                    }
+                    tableModel.rows = newRows;
+                }
+
+                function onOptimizationFinished(result) {
+                    const oldRows = tableModel.rows;
+
+                    const varNames = new Set();
+                    for (const row of oldRows) {
+                        varNames.add(row.varName);
+                    }
+                    for (const key in result) {
+                        varNames.add(key);
+                    }
+
+                    const newRows = [];
+                    for (const varName of varNames) {
+                        newRows.push({
+                             fullName: keyTranslations[varName] ?? varName,
+                             varName,
+                             value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
+                             value2: result[varName].toString(),
+                         });
+                    }
+                    tableModel.rows = newRows;
                 }
             }
         }
