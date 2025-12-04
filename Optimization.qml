@@ -142,54 +142,6 @@ ColumnLayout {
         value: 0
     }
 
-    TableView {
-        id: resultsTable
-
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        interactive: false
-        rowSpacing: -1
-        columnSpacing: -1
-
-        columnWidthProvider: function(column) {
-            switch (column) {
-            case 0: return resultsTable.width * 0.6;
-            case 1: return resultsTable.width * 0.1;
-            case 2: return resultsTable.width * 0.3;
-            }
-        }
-
-        model: TableModel {
-            id: tableModel
-
-            TableModelColumn { display: "col1" }
-            TableModelColumn { display: "col2" }
-            TableModelColumn { display: "col3" }
-
-            rows: [
-                { col1: "Prawdopodobieństwo", col2: "p0", col3: "0" },
-                { col1: "Prawdopodobieństwo", col2: "p1", col3: "0.02" },
-                { col1: "Prawdopodobieństwo", col2: "p2", col3: "0.06" }
-            ]
-        }
-
-        delegate: Rectangle {
-            implicitHeight: 30
-            border.width: 1
-            border.color: palette.shadow
-            color: row % 2 ? palette.base : palette.alternateBase
-
-            Text {
-                text: display
-                color: palette.text
-                anchors.fill: parent
-                anchors.margins: 6
-                verticalAlignment: Text.AlignVCenter
-                font.pixelSize: 12
-            }
-        }
-    }
-
     Connections {
         target: gwo
 

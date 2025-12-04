@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Fusion
+import Qt.labs.qmlmodels
 
 ApplicationWindow {
     id: root
@@ -68,12 +69,12 @@ ApplicationWindow {
     }
 
     ColumnLayout {
+        spacing: 15
         anchors.fill: parent
         anchors.margins: 7
 
         Label {
             Layout.fillWidth: true
-
             text: "M/M/m/-/m"
 
             font.pixelSize: 30
@@ -89,47 +90,74 @@ ApplicationWindow {
             }
         }
 
-        TabBar {
-            id: tabBar
+        RowLayout {
+            spacing: 12
+            Layout.fillWidth: true
 
-            TabButton {
-                text: "Analiza"
-                width: implicitWidth + 10
+            Analysis {
+                Layout.fillWidth: true
+                Layout.preferredWidth: 1
+                Layout.alignment: Qt.AlignTop
             }
-            TabButton {
-                text: "Porównanie"
-                width: implicitWidth + 10
+            Rectangle {
+                Layout.preferredWidth: 3
+                Layout.fillHeight: true
+                Layout.maximumHeight: parent.implicitHeight
+                Layout.alignment: Qt.AlignTop
+                color: palette.dark
             }
-            TabButton {
-                text: "Optymalizacja"
-                width: implicitWidth + 10
+            Optimization {
+                Layout.fillWidth: true
+                Layout.preferredWidth: 1
+                Layout.alignment: Qt.AlignTop
             }
         }
 
-        StackLayout {
-            currentIndex: tabBar.currentIndex
+        TableView {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            interactive: false
+            rowSpacing: -1
+            columnSpacing: -1
 
-            Analysis {}
-            RowLayout {
-                spacing: 10
-
-                Analysis {
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 1
-                }
-                Rectangle {
-                    Layout.preferredWidth: 1
-                    Layout.fillHeight: true
-                    color: palette.dark
-                }
-                Optimization {
-                    Layout.fillWidth: true
-                    Layout.preferredWidth: 1
+            columnWidthProvider: function(column) {
+                switch (column) {
+                case 0: return parent.width * 0.5;
+                case 1: return parent.width * 0.1;
+                case 2: return parent.width * 0.2;
+                case 3: return parent.width * 0.2;
                 }
             }
-            Optimization {}
+
+            model: TableModel {
+                id: tableModel
+                rows: [
+                    { fullName: "Prawdopodopieństwo", varName: "p0", value1: 1.2, value2: 1.1 },
+                    { fullName: "Prawdopodopieństwo", varName: "p1", value1: 2.2, value2: 2.1 },
+                    { fullName: "Prawdopodopieństwo", varName: "p2", value1: 3.2, value2: 3.1 },
+                ]
+
+                TableModelColumn { display: "fullName" }
+                TableModelColumn { display: "varName" }
+                TableModelColumn { display: "value1" }
+                TableModelColumn { display: "value2" }
+            }
+
+            delegate: Rectangle {
+                implicitHeight: 30
+                border.width: 1
+                border.color: palette.shadow
+                color: row % 2 ? palette.base : palette.alternateBase
+
+                Text {
+                    text: display
+                    color: palette.text
+                    anchors.fill: parent
+                    anchors.margins: 6
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 12
+                }
+            }
         }
     }
 }
