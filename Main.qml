@@ -13,50 +13,58 @@ ApplicationWindow {
     minimumWidth: 1225
     minimumHeight: 600
 
+    color: darkModeCheckbox.checked ? "#0d1117" : "#fff"
+
     readonly property Palette darkPalette: Palette {
-        alternateBase: "#222"
-        base: "#000"
-        button: "#111"
-        buttonText: "#fff"
-        dark: "#666"
-        highlight: "#d73"
-        highlightedText: "#000"
-        light: "#000"
-        mid: "#444"
-        midlight: "#333"
-        placeholderText: "#80000000"
-        shadow: "#888"
-        text: "#fff"
-        window: "#222"
-        windowText: "#fff"
+        alternateBase: "#1a1c1e"
+        base: "#0d1117"
+        button: "#21262d"
+        buttonText: "#c9d1d9"
+        dark: "#30363d"
+        highlight: "#58a6ff"
+        highlightedText: "#fff"
+        light: "#30363d"
+        mid: "#3e4451"
+        midlight: "#2d333b"
+        placeholderText: "#8b949e"
+        shadow: "#6e7681"
+        text: "#d3dbe3"
+        window: "#666"
+        windowText: "#c9d1d9"
     }
+
     readonly property Palette lightPalette: Palette {
-        alternateBase: "#ddd"
+        alternateBase: "#f6f8fa"
         base: "#fff"
-        button: "#eee"
-        buttonText: "#000"
-        dark: "#999"
-        highlight: "#38c"
+        button: "#f3f4f6"
+        buttonText: "#24292e"
+        dark: "#d0d7de"
+        highlight: "#0969da"
         highlightedText: "#fff"
         light: "#fff"
-        mid: "#bbb"
-        midlight: "#ccc"
-        placeholderText: "#80000000"
-        shadow: "#777"
-        text: "#000"
-        window: "#eee"
-        windowText: "#000"
+        mid: "#d8dee4"
+        midlight: "#eaeef2"
+        placeholderText: "#6e7781"
+        shadow: "#1b1f2426"
+        text: "#24292e"
+        window: "#fff"
+        windowText: "#24292e"
     }
-    palette: lightPalette
+    palette: darkModeCheckbox.checked ? darkPalette : lightPalette
 
     menuBar: MenuBar {
+        background: Rectangle {
+            implicitHeight: 20
+            color: root.color
+        }
+
         Menu {
             title: "Wygląd"
 
             MenuItem {
+                id: darkModeCheckbox
                 checkable: true
                 text: "Ciemny motyw"
-                onTriggered: this.checked ? root.palette = root.darkPalette : root.palette = root.lightPalette
             }
         }
     }
@@ -77,9 +85,9 @@ ApplicationWindow {
             bottomPadding: 15
             horizontalAlignment: Text.AlignHCenter
 
-            color: "#ddd"
+            color: "#eee"
             background: Rectangle {
-                color: "#005"
+                color: darkModeCheckbox.checked ? "#1a1f28" : "#4a5568"
             }
         }
 
@@ -209,11 +217,11 @@ ApplicationWindow {
                     const newRows = [];
                     for (const varName of varNames) {
                         newRows.push({
-                             fullName: keyTranslations[varName] ?? varName,
-                             varName,
-                             value1: result[varName]?.toString() ?? "-",
-                             value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
-                         });
+                            fullName: keyTranslations[varName] ?? varName,
+                            varName,
+                            value1: result[varName]?.toString() ?? "-",
+                            value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
+                        });
                     }
                     tableModel.rows = newRows;
                 }
@@ -232,11 +240,11 @@ ApplicationWindow {
                     const newRows = [];
                     for (const varName of varNames) {
                         newRows.push({
-                             fullName: keyTranslations[varName] ?? varName,
-                             varName,
-                             value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
-                             value2: result[varName].toString(),
-                         });
+                            fullName: keyTranslations[varName] ?? varName,
+                            varName,
+                            value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
+                            value2: result[varName].toString(),
+                        });
                     }
                     tableModel.rows = newRows;
                 }
