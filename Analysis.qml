@@ -54,29 +54,18 @@ ColumnLayout {
             }
 
             Label {
-                text: "Koszt R:"
+                text: "Liczba kanałów obsługi:"
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
             SpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
                 editable: true
-                value: nls_params.r
-                onValueChanged: nls_params.r = value
-            }
-
-            Label {
-                text: "Koszt C:"
-                Layout.fillWidth: true
-                font.pixelSize: 12
-            }
-            SpinBox {
-                Layout.fillWidth: true
-                implicitHeight: 24
-                editable: true
-                value: nls_params.c
-                onValueChanged: nls_params.c = value
+                value: nls_params.m
+                onValueChanged: nls_params.m = value
             }
         }
 
@@ -91,21 +80,6 @@ ColumnLayout {
             Layout.fillWidth: true
             Layout.horizontalStretchFactor: 2
             Layout.alignment: Qt.AlignTop
-
-            Label {
-                text: "Liczba kanałów obsługi:"
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: 3
-                font.pixelSize: 12
-            }
-            SpinBox {
-                Layout.fillWidth: true
-                Layout.horizontalStretchFactor: 5
-                implicitHeight: 24
-                editable: true
-                value: nls_params.m
-                onValueChanged: nls_params.m = value
-            }
 
             CheckBox {
                 id: calculateProbability
