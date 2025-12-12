@@ -144,109 +144,128 @@ ApplicationWindow {
             }
         }
 
-        TableView {
-            id: resultsTable
+        ScrollView {
+            id: scrollView
             Layout.preferredWidth: parent.width
             Layout.fillHeight: true
             Layout.topMargin: -8
+            Layout.bottomMargin: 4
 
-            interactive: false
-            rowSpacing: -1
-            columnSpacing: -1
+            TableView {
+                id: resultsTable
+                clip: true
+                anchors.fill: parent
 
-            columnWidthProvider: function(column) {
-                switch (column) {
-                case 0: return parent.width * 0.5;
-                case 1: return parent.width * 0.1;
-                case 2: return parent.width * 0.2;
-                case 3: return parent.width * 0.2;
+                interactive: false
+                rowSpacing: -1
+                columnSpacing: -1
+
+                columnWidthProvider: function(column) {
+                    switch (column) {
+                    case 0: return parent.width * 0.5;
+                    case 1: return parent.width * 0.1;
+                    case 2: return parent.width * 0.2;
+                    case 3: return parent.width * 0.2;
+                    }
+                }
+
+                model: TableModel {
+                    id: tableModel
+
+                    TableModelColumn { display: "fullName" }
+                    TableModelColumn { display: "varName" }
+                    TableModelColumn { display: "value1" }
+                    TableModelColumn { display: "value2" }
+                }
+
+                delegate: Rectangle {
+                    implicitHeight: 30
+                    border.width: 1
+                    border.color: palette.shadow
+                    color: row % 2 ? palette.alternateBase : palette.base
+
+                    Text {
+                        text: display
+                        color: palette.text
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 12
+                    }
+                }
+
+                Connections {
+                    target: gwo
+
+                    readonly property var keyTranslations: {
+                        "f_obj": "Wynik funkcji celu",
+                        "p0": "Prawdopodobieństwo",
+                        "pm": "Prawdopodobieństwo odmowy",
+                        "a": "Względna zdolnośc obsługi",
+                        "q": "Względna zdolność obsługi",
+                        "n_mean": "Średnia liczba zgłoszeń w systemie",
+                        "m_disp": "Średnia liczba kanałów obsługujących",
+                        "m_empty": "Średnia liczba kanałów niezajętych",
+                        "m_opt": "Optymalna wartość m",
+                    }
+
+                    function onAnalysisFinished(result) {
+                        const oldRows = tableModel.rows;
+
+                        const varNames = new Set();
+                        for (const row of oldRows) {
+                            varNames.add(row.varName);
+                        }
+                        for (const key in result) {
+                            varNames.add(key);
+                        }
+
+                        const newRows = [];
+                        for (const varName of varNames) {
+                            newRows.push({
+                                fullName: keyTranslations[varName] ?? varName,
+                                varName,
+                                value1: result[varName]?.toString() ?? "-",
+                                value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
+                            });
+                        }
+                        tableModel.rows = newRows;
+                    }
+
+                    function onOptimizationFinished(result) {
+                        const oldRows = tableModel.rows;
+
+                        const varNames = new Set();
+                        for (const row of oldRows) {
+                            varNames.add(row.varName);
+                        }
+                        for (const key in result) {
+                            varNames.add(key);
+                        }
+
+                        const newRows = [];
+                        for (const varName of varNames) {
+                            newRows.push({
+                                fullName: keyTranslations[varName] ?? varName,
+                                varName,
+                                value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
+                                value2: result[varName].toString(),
+                            });
+                        }
+                        tableModel.rows = newRows;
+                    }
                 }
             }
 
-            model: TableModel {
-                id: tableModel
-
-                TableModelColumn { display: "fullName" }
-                TableModelColumn { display: "varName" }
-                TableModelColumn { display: "value1" }
-                TableModelColumn { display: "value2" }
-            }
-
-            delegate: Rectangle {
-                implicitHeight: 30
-                border.width: 1
-                border.color: palette.shadow
-                color: row % 2 ? palette.alternateBase : palette.base
-
-                Text {
-                    text: display
-                    color: palette.text
-                    anchors.fill: parent
-                    anchors.margins: 6
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 12
-                }
-            }
-
-            Connections {
-                target: gwo
-
-                readonly property var keyTranslations: {
-                    "f_obj": "Wynik funkcji celu",
-                    "p0": "Prawdopodobieństwo",
-                    "pm": "Prawdopodobieństwo odmowy",
-                    "a": "Względna zdolnośc obsługi",
-                    "q": "Względna zdolność obsługi",
-                    "n_mean": "Średnia liczba zgłoszeń w systemie",
-                    "m_disp": "Średnia liczba kanałów obsługujących",
-                    "m_empty": "Średnia liczba kanałów niezajętych",
-                    "m_opt": "Optymalna wartość m",
-                }
-
-                function onAnalysisFinished(result) {
-                    const oldRows = tableModel.rows;
-
-                    const varNames = new Set();
-                    for (const row of oldRows) {
-                        varNames.add(row.varName);
+            MouseArea {
+                anchors.fill: parent
+                onWheel: (wheel) => {
+                    if (wheel.angleDelta.y > 0) {
+                        scrollView.ScrollBar.vertical.decrease()
+                    } else {
+                        scrollView.ScrollBar.vertical.increase()
                     }
-                    for (const key in result) {
-                        varNames.add(key);
-                    }
-
-                    const newRows = [];
-                    for (const varName of varNames) {
-                        newRows.push({
-                            fullName: keyTranslations[varName] ?? varName,
-                            varName,
-                            value1: result[varName]?.toString() ?? "-",
-                            value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
-                        });
-                    }
-                    tableModel.rows = newRows;
-                }
-
-                function onOptimizationFinished(result) {
-                    const oldRows = tableModel.rows;
-
-                    const varNames = new Set();
-                    for (const row of oldRows) {
-                        varNames.add(row.varName);
-                    }
-                    for (const key in result) {
-                        varNames.add(key);
-                    }
-
-                    const newRows = [];
-                    for (const varName of varNames) {
-                        newRows.push({
-                            fullName: keyTranslations[varName] ?? varName,
-                            varName,
-                            value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
-                            value2: result[varName].toString(),
-                        });
-                    }
-                    tableModel.rows = newRows;
+                    wheel.accepted = true
                 }
             }
         }
