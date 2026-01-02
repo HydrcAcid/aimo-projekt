@@ -19,6 +19,8 @@ qt_add_qml_module(appaimo_projekt
     URI aimo_projekt
     QML_FILES
         Main.qml
+        Analysis.qml
+        Optimization.qml
     SOURCES
         greywolfoptimizer.cpp greywolfoptimizer.h
         opt_params.h
