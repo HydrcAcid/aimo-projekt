@@ -1,15 +1,18 @@
+#ifndef DEFINICJE_H
+#define DEFINICJE_H
+
 #include <cmath>
 #include <vector>
 #include <QVariantMap>
 
 // silnia
-double factorial(int n) {
+inline double factorial(int n) {
     if (n <= 1) return 1.0;
     return n * factorial(n - 1);
 }
 
 // funkcja obliczaj¹ca P0 (prawdopodobieñstwo, ¿e system jest pusty)
-double calculateP0(int m, int N, double rho) {
+inline double calculateP0(int m, int N, double rho) {
     double sum = 0.0;
 
 	// pierwsza suma (dla k < m)
@@ -27,7 +30,7 @@ double calculateP0(int m, int N, double rho) {
 }
 
 // FUNKCJA PRAWDOPODOBIEÑSTWA ODMOWY
-double calculateLossProbability(double lambda, double mu, int m, int N) {
+inline double calculateLossProbability(double lambda, double mu, int m, int N) {
     double rho = lambda / mu;
     double p0 = calculateP0(m, N, rho);
     double pN = p0 * std::pow(rho, N) / (factorial(m) * std::pow(m, N - m));
@@ -37,7 +40,7 @@ double calculateLossProbability(double lambda, double mu, int m, int N) {
 
 
 // FUNKCJA CELU
-double objectiveFunction(const std::vector<double>& position) {
+inline double objectiveFunction(const std::vector<double>& position) {
     // Zak³o¿enie: position[0] = m (serwery), position[1] = N (pojemnoœæ ca³kowita)
 
     int m = std::round(position[0]);
@@ -69,7 +72,7 @@ double objectiveFunction(const std::vector<double>& position) {
 
 // ANALYZE
 // zwraca mapê dla Qt
-QVariantMap analyze(double lambda, double mu, int m, int N, int p_lb, int p_ub) {
+inline QVariantMap analyze(double lambda, double mu, int m, int N, int p_lb, int p_ub) {
     QVariantMap result;
     double rho = lambda / mu;
     double p0 = calculateP0(m, N, rho);
@@ -126,3 +129,5 @@ QVariantMap analyze(double lambda, double mu, int m, int N, int p_lb, int p_ub) 
 
     return result;
 }
+
+#endif // DEFINICJE_H
