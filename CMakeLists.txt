@@ -25,6 +25,7 @@ qt_add_qml_module(appaimo_projekt
         greywolfoptimizer.cpp greywolfoptimizer.h
         opt_params.h
         analysis_params.h
+        SOURCES intermediate.h
 )
 
 set_target_properties(appaimo_projekt PROPERTIES

@@ -31,13 +31,17 @@ ColumnLayout {
                 Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            SpinBox {
+            TextField {
                 Layout.fillWidth: true
-                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-                editable: true
-                value: nls_params.lambda
-                onValueChanged: nls_params.lambda = value
+
+                validator: DoubleValidator {
+                    bottom: 0.0
+                    decimals: 3
+                }
+
+                text: nls_params.lambda.toString()
+                onEditingFinished: nls_params.lambda = parseFloat(text)
             }
 
             Label {
@@ -45,12 +49,17 @@ ColumnLayout {
                 Layout.fillWidth: true
                 font.pixelSize: 12
             }
-            SpinBox {
+            TextField {
                 Layout.fillWidth: true
                 implicitHeight: 24
-                editable: true
-                value: nls_params.mu
-                onValueChanged: nls_params.mu = value
+
+                validator: DoubleValidator {
+                    bottom: 0.0
+                    decimals: 3
+                }
+
+                text: nls_params.mu.toString()
+                onEditingFinished: nls_params.mu = parseFloat(text)
             }
 
             Label {

@@ -1,6 +1,7 @@
 #include "greywolfoptimizer.h"
 #include "opt_params.h"
 #include "analysis_params.h"
+#include "intermediate.h"
 
 #include <QVariant>
 #include <QtConcurrent/QtConcurrent>
@@ -21,56 +22,59 @@ void GreyWolfOptimizer::startOptimization() {
 
 void GreyWolfOptimizer::startAnalysis() {
     (void)QtConcurrent::run([=]() {
-        QVariantMap result = analyze(m_nlsParams->m(), m_nlsParams->lambda(), m_nlsParams->mu(),
-                                     m_nlsParams->r(), m_nlsParams->c(), m_nlsParams->calcProb(),
+        QVariantMap result = analyze(m_nlsParams->m(), m_nlsParams->lambda(), m_nlsParams->mu(), m_nlsParams->calcProb(),
                                      m_nlsParams->pLB(), m_nlsParams->pUB());
         emit analysisFinished(result);
     });
 }
 
-// Do implementacji (a = lambda / mu)
-double GreyWolfOptimizer::lossProbability(quint32 m, double a) {
-    return 0.0;
-}
+// Do dokonczenia
+QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, bool calc_probability, quint32 p_lb, quint32 p_ub) {
+    QVariantMap result;
+    double rho{lambda / mu};
+    double p0{calculateP0(m, rho)};     // Prawdopodobienstwo stanu pustego
+    double pm{calculatePj(m, rho, p0)}; // Prawdopodobienstwo odmowy
 
-// Do implementacji
-double GreyWolfOptimizer::objectiveFunction(quint32 m, double lambda, double my, double r, double c) {
-    return 0.0;
-}
+    // Obliczanie rozkladu prawdopodobienstw
+    QVector<double> probs(p_ub - p_lb + 1);
 
-// Do dokończenia
-QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, double r, double c, bool calc_probability, quint32 p_lb, quint32 p_ub) {
-
-    // Podstawienie danych do funkcji celu
-
-    // Póki co liczenie prawdopodobieństwa można pominąć
     if(calc_probability) {
-        // Obliczenie prawdopodobieństwa dla zadanego prezdziału
+        for(quint32 j{0}; j < p_ub - p_lb + 1; j++) {
+            probs[j] = calculatePj(j + p_lb, rho, p0);
+
+            QString property_name = tr("p%1").arg(j + p_lb);
+            result[property_name] = probs[j];
+        }
     }
 
-    /*
-        Zwrócenie obliczonych danych:
+    // Obliczenie
+    double q_eff = 1.0 - pm; // Wzgledna zdolnosc obslugi
+    double lambda_eff = lambda * q_eff; // Bezwzgledna zdolnosc obslugi
 
-        Wynik funkcji celu z podstawionymi wyliczonymi danymi ("f_obj")
-        P0 ("p0")
-        Prawdopodobieństwo odmowy obliczone z funkcji ("pm")
-        Względna zdolnośc obsługi ("a")
-        Względna zdolność obsługi ("q")
-        Średnia liczba zgłoszeń w systemie ("n_mean")
-        Średnia liczba kanałów obsługujących ("m_disp")
-        Średnia liczba kanałów niezajętych ("m_empty")
-    */
+    double n_mean = rho * q_eff;    // Srednia liczba zgłoszen w systemie
+    double m0_mean = n_mean;        // Srednie obciazenie systemu
+    double mnz_mean = m - n_mean;        // Srednia liczba niezajetych kanalow
+    double ts = 1 / mu;             // Sredni czas przebywania w systemie
 
-    QVariantMap result;
-    result["p_lb"] = p_lb;
-    result["p_lb"] = p_ub;
+    // ZAPIS
+    result["p0"] = p0;          // Prawdopodobieństwo stanu pustego
+    result["rho"] = rho;
+    result["pm"] = pm;          // Prawdopodobieństwo odmowy
+    result["q"] = q_eff;        // Wzgledna przpustowosc stystemu
+    result["A"] = lambda_eff;   // Bezwzgledna przpustowosc stystemu
+    result["n_mean"] = n_mean;  // Srednia liczba zgloszen w systemie
+    result["m0_mean"] = m0_mean;// Srednia liczba kanalow obslogojacych
+    result["mnz_mean"] = mnz_mean;  // Srednia liczba kanalow niezajetych
+    result["ts_mean"] = ts;     // Sredni czas przebywania w systemie
 
     return result;
 }
 
-// Do dokończenia
+// Do dokonczenia
 QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32 max_m,
     double lambda, double mu, double r, double c) {
+
+    auto *rng = QRandomGenerator::global();
 
     // Optymalizacja w jednym wymiarze
     QVector<Wolf> wolves(num_wolves);
@@ -78,35 +82,51 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
         w.m = (double)QRandomGenerator::global()->bounded(1U, max_m);
     }
 
+    Wolf alpha{0,1e18}, beta{0,1e18}, delta{0,1e18};
     quint32 m_opt{0};
+    double rho{lambda / mu};
 
     // Główna pętla algorytmu
     for(quint32 i{0}; i < max_iter; i++) {
+        alpha.score = beta.score = delta.score = 1e18;
+
+        for (auto &w : wolves) {
+            w.m = std::clamp(w.m, 1.0, double(max_m));
+            w.score = -objectiveFunction(w.m, rho, c, r);
+
+            if (w.score < alpha.score) { delta = beta; beta = alpha; alpha = w; }
+            else if (w.score < beta.score) { delta = beta; beta = w; }
+            else if (w.score < delta.score) { delta = w; }
+        }
+
+        double a = 2.0 - 2.0 * double(i) / double(max_iter);
+
+        // update
+        for (auto &w : wolves) {
+            auto update = [&](const Wolf &L){
+                double r1 = rng->generateDouble();
+                double r2 = rng->generateDouble();
+                double A = 2 * a * r1 - a;
+                double C = 2 * r2;
+                double D = std::abs(C * L.m - w.m);
+                return L.m - A * D;
+            };
+
+            w.m = (update(alpha) + update(beta) + update(delta)) / 3.0;
+        }
 
         // Aktualizacja progressbara
         emit optimizationProgressChanged(double(i+1) / max_iter);
     }
 
-    /*
-        Zwrócenie obliczonych danych:
+    m_opt = static_cast<quint32>(std::round(alpha.m));
+    QVariantMap result{analyze(m_opt, lambda, mu, false)};
 
-        Wyliczone z gwo: optymalne m ("m_opt")
-        Wynik funkcji celu z podstawionymi wyliczonymi danymi ("f_obj")
-        P0 ("p0")
+    auto val_iter{result.find("n_mean")};
+    double n_mean{val_iter->toDouble()};
 
-
-        Te dane przechodzą z metody analyze():
-
-        Prawdopodobieństwo odmowy obliczone z funkcji ("pm")
-        Względna zdolnośc obsługi ("a")
-        Względna zdolność obsługi ("q")
-        Średnia liczba zgłoszeń w systemie ("n_mean")
-        Średnia liczba kanałów obsługujących ("m_disp")
-        Średnia liczba kanałów niezajętych ("m_empty")
-    */
-
-    QVariantMap result{analyze(m_opt, lambda, mu, r, c, false)};
-    result["f_obj"] = lambda; // Przykład, tu powinien być wynik z funkcji celu
+    result["m_opt"] = m_opt;
+    result["f_obj"] = systemAnalysis(m_opt, r, c, n_mean);
 
     return result;
 }

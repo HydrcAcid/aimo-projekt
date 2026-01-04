@@ -199,14 +199,15 @@ ApplicationWindow {
 
                     readonly property var keyTranslations: {
                         "f_obj": "Wynik funkcji celu",
-                        "p0": "Prawdopodobieństwo",
+                        "m_opt": "Optymalna wartość m",
+                        "p0": "Prawdopodobieństwo stanu psutego",
                         "pm": "Prawdopodobieństwo odmowy",
-                        "a": "Względna zdolnośc obsługi",
+                        "A": "Bezwzględna zdolnośc obsługi",
                         "q": "Względna zdolność obsługi",
                         "n_mean": "Średnia liczba zgłoszeń w systemie",
-                        "m_disp": "Średnia liczba kanałów obsługujących",
-                        "m_empty": "Średnia liczba kanałów niezajętych",
-                        "m_opt": "Optymalna wartość m",
+                        "m0_mean": "Średnia liczba kanałów obsługujących",
+                        "mnz_mean": "Średnia liczba kanałów niezajętych",
+                        "ts_mean": "Średni czas przebywania w systemie"
                     }
 
                     function onAnalysisFinished(result) {

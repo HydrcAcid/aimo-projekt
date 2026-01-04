@@ -26,12 +26,9 @@ signals:
     void analysisFinished(const QVariantMap& result);
 
 private:
-    double lossProbability(quint32 m, double a);
-    double objectiveFunction(quint32 m, double lambda, double mu, double r, double c);
-
     QVariantMap gwo(quint32 max_iter, quint32 num_wolves, quint32 max_m,
         double lambda, double mu, double r, double c);
-    QVariantMap analyze(quint32 m, double lambda, double mu, double r, double c,
+    QVariantMap analyze(quint32 m, double lambda, double mu,
         bool calc_probability, quint32 p_lb = 0, quint32 p_ub = 0);
 
     OptimizationParams* m_optParams{nullptr};
