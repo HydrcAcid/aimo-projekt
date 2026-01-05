@@ -250,7 +250,7 @@ ApplicationWindow {
                                 fullName: keyTranslations[varName] ?? varName,
                                 varName,
                                 value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
-                                value2: result[varName].toString(),
+                                value2: result[varName]?.toString() ?? "-",
                             });
                         }
                         tableModel.rows = newRows;

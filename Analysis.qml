@@ -41,7 +41,11 @@ ColumnLayout {
                 }
 
                 text: nls_params.lambda.toString()
-                onEditingFinished: nls_params.lambda = parseFloat(text)
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    nls_params.lambda = parseFloat(normalized)
+                    text = nls_params.lambda.toString()
+                }
             }
 
             Label {
@@ -59,7 +63,11 @@ ColumnLayout {
                 }
 
                 text: nls_params.mu.toString()
-                onEditingFinished: nls_params.mu = parseFloat(text)
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    nls_params.mu = parseFloat(normalized)
+                    text = nls_params.mu.toString()
+                }
             }
 
             Label {

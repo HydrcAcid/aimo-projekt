@@ -58,7 +58,6 @@ QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, bool
 
     // ZAPIS
     result["p0"] = p0;          // Prawdopodobieństwo stanu pustego
-    result["rho"] = rho;
     result["pm"] = pm;          // Prawdopodobieństwo odmowy
     result["q"] = q_eff;        // Wzgledna przpustowosc stystemu
     result["A"] = lambda_eff;   // Bezwzgledna przpustowosc stystemu

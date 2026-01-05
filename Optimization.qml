@@ -41,7 +41,11 @@ ColumnLayout {
                 }
 
                 text: opt_params.lambda.toString()
-                onEditingFinished: opt_params.lambda = parseFloat(text)
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    opt_params.lambda = parseFloat(normalized)
+                    text = opt_params.lambda.toString()
+                }
             }
 
             Label {
@@ -59,7 +63,11 @@ ColumnLayout {
                 }
 
                 text: opt_params.mu.toString()
-                onEditingFinished: opt_params.mu = parseFloat(text)
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    opt_params.mu = parseFloat(normalized)
+                    text = opt_params.mu.toString()
+                }
             }
 
             Label {
@@ -67,12 +75,21 @@ ColumnLayout {
                 Layout.fillWidth: true
                 font.pixelSize: 12
             }
-            SpinBox {
+            TextField {
                 Layout.fillWidth: true
                 implicitHeight: 24
-                editable: true
-                value: opt_params.r
-                onValueChanged: opt_params.r = value
+
+                validator: DoubleValidator {
+                    bottom: 0.0
+                    decimals: 3
+                }
+
+                text: opt_params.r.toString()
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    opt_params.r = parseFloat(normalized)
+                    text = opt_params.r.toString()
+                }
             }
 
             Label {
@@ -80,12 +97,21 @@ ColumnLayout {
                 Layout.fillWidth: true
                 font.pixelSize: 12
             }
-            SpinBox {
+            TextField {
                 Layout.fillWidth: true
                 implicitHeight: 24
-                editable: true
-                value: opt_params.c
-                onValueChanged: opt_params.c = value
+
+                validator: DoubleValidator {
+                    bottom: 0.0
+                    decimals: 3
+                }
+
+                text: opt_params.c.toString()
+                onEditingFinished: {
+                    var normalized = text.replace(",", ".")
+                    opt_params.c = parseFloat(normalized)
+                    text = opt_params.c.toString()
+                }
             }
         }
 
@@ -110,6 +136,10 @@ ColumnLayout {
                 Layout.fillWidth: true
                 implicitHeight: 24
                 editable: true
+
+                from: 0
+                to: 200
+
                 value: opt_params.iterMax
                 onValueChanged: opt_params.iterMax = value
             }
@@ -123,6 +153,10 @@ ColumnLayout {
                 Layout.fillWidth: true
                 implicitHeight: 24
                 editable: true
+
+                from: 0
+                to: 200
+
                 value: opt_params.mMax
                 onValueChanged: opt_params.mMax = value
             }
@@ -136,6 +170,10 @@ ColumnLayout {
                 Layout.fillWidth: true
                 implicitHeight: 24
                 editable: true
+
+                from: 0
+                to: 200
+
                 value: opt_params.wolfCount
                 onValueChanged: opt_params.wolfCount = value
             }
@@ -151,19 +189,7 @@ ColumnLayout {
         }
     }
 
-    ProgressBar {
-        id: progressBar
-        Layout.fillWidth: true
-        from: 0
-        to: 1
-        value: 0
-    }
-
     Connections {
         target: gwo
-
-        function onOptimizationProgressChanged(progress) {
-            progressBar.value = progress;
-        }
     }
 }
