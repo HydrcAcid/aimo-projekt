@@ -210,7 +210,7 @@ ApplicationWindow {
                         "ts_mean": "Średni czas przebywania w systemie"
                     }
 
-                    function onAnalysisFinished(result) {
+                    function updateTableRows(result, rowObjectGetter) {
                         const oldRows = tableModel.rows;
 
                         const varNames = new Set();
@@ -222,38 +222,45 @@ ApplicationWindow {
                         }
 
                         const newRows = [];
+                        const pRows = [];
+                        let pm = null;
                         for (const varName of varNames) {
-                            newRows.push({
-                                fullName: keyTranslations[varName] ?? varName,
-                                varName,
-                                value1: result[varName]?.toString() ?? "-",
-                                value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
-                            });
+                            const rowObject = rowObjectGetter(varName);
+                            if (varName === "pm") {
+                                pm = rowObject;
+                                continue;
+                            }
+                            let rows = /^p\d+$/.test(varName) ? pRows : newRows;
+                            rows.push(rowObject);
                         }
-                        tableModel.rows = newRows;
+
+                        newRows.push(pm);
+                        pRows.sort((a, b) => {
+                            const numA = parseInt(a.varName.slice(1), 10);
+                            const numB = parseInt(b.varName.slice(1), 10);
+                            return numA - numB;
+                        });
+                        tableModel.rows = newRows.concat(pRows);
+                    }
+
+                    function onAnalysisFinished(result) {
+                        const oldRows = tableModel.rows;
+                        updateTableRows(result, (varName) => ({
+                            fullName: keyTranslations[varName] ?? varName,
+                            varName,
+                            value1: result[varName]?.toString() ?? "-",
+                            value2: oldRows.find(row => row.varName === varName)?.value2.toString() ?? "-",
+                        }));
                     }
 
                     function onOptimizationFinished(result) {
                         const oldRows = tableModel.rows;
-
-                        const varNames = new Set();
-                        for (const row of oldRows) {
-                            varNames.add(row.varName);
-                        }
-                        for (const key in result) {
-                            varNames.add(key);
-                        }
-
-                        const newRows = [];
-                        for (const varName of varNames) {
-                            newRows.push({
-                                fullName: keyTranslations[varName] ?? varName,
-                                varName,
-                                value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
-                                value2: result[varName]?.toString() ?? "-",
-                            });
-                        }
-                        tableModel.rows = newRows;
+                        updateTableRows(result, (varName) => ({
+                            fullName: keyTranslations[varName] ?? varName,
+                            varName,
+                            value1: oldRows.find(row => row.varName === varName)?.value1.toString() ?? "-",
+                            value2: result[varName]?.toString() ?? "-",
+                        }));
                     }
                 }
             }

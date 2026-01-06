@@ -31,43 +31,27 @@ ColumnLayout {
                 Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: nls_params.lambda.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    nls_params.lambda = parseFloat(normalized)
-                    text = nls_params.lambda.toString()
-                }
+                from: 0.0
+                value: nls_params.lambda
+                onValueChanged: nls_params.lambda = value;
             }
 
             Label {
                 text: "Średni czas obsługi:"
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: nls_params.mu.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    nls_params.mu = parseFloat(normalized)
-                    text = nls_params.mu.toString()
-                }
+                from: 0.0
+                value: nls_params.mu
+                onValueChanged: nls_params.mu = value
             }
 
             Label {
