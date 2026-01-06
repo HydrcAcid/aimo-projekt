@@ -21,6 +21,7 @@ qt_add_qml_module(appaimo_projekt
         Main.qml
         Analysis.qml
         Optimization.qml
+        DoubleSpinBox.qml
     SOURCES
         greywolfoptimizer.cpp greywolfoptimizer.h
         opt_params.h

@@ -31,87 +31,58 @@ ColumnLayout {
                 Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: opt_params.lambda.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    opt_params.lambda = parseFloat(normalized)
-                    text = opt_params.lambda.toString()
-                }
+                from: 0.0
+                value: opt_params.lambda
+                onValueChanged: opt_params.lambda = value
             }
 
             Label {
                 text: "Średni czas obsługi:"
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: opt_params.mu.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    opt_params.mu = parseFloat(normalized)
-                    text = opt_params.mu.toString()
-                }
+                from: 0.0
+                value: opt_params.mu
+                onValueChanged: opt_params.mu = value
             }
 
             Label {
                 text: "Koszt R:"
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: opt_params.r.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    opt_params.r = parseFloat(normalized)
-                    text = opt_params.r.toString()
-                }
+                from: 0.0
+                value: opt_params.r
+                onValueChanged: opt_params.r = value
             }
 
             Label {
                 text: "Koszt C:"
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 3
                 font.pixelSize: 12
             }
-            TextField {
+            DoubleSpinBox {
                 Layout.fillWidth: true
+                Layout.horizontalStretchFactor: 5
                 implicitHeight: 24
-
-                validator: DoubleValidator {
-                    bottom: 0.0
-                    decimals: 3
-                }
-
-                text: opt_params.c.toString()
-                onEditingFinished: {
-                    var normalized = text.replace(",", ".")
-                    opt_params.c = parseFloat(normalized)
-                    text = opt_params.c.toString()
-                }
+                from: 0.0
+                value: opt_params.c
+                onValueChanged: opt_params.c = value
             }
         }
 
