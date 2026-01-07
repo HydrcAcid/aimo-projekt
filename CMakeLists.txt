@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.19)
 
 project(aimo_projekt VERSION 0.1 LANGUAGES CXX)
 
@@ -39,9 +39,11 @@ target_link_libraries(appaimo_projekt
         Qt6::Core
 )
 
-include(GNUInstallDirs)
-install(TARGETS appaimo_projekt
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+include(InstallRequiredSystemLibraries)
+install(TARGETS appaimo_projekt)
+qt_generate_deploy_qml_app_script(
+    TARGET appaimo_projekt
+    OUTPUT_SCRIPT DEPLOY_SCRIPT
+    NO_TRANSLATIONS
 )
+install(SCRIPT ${DEPLOY_SCRIPT})
