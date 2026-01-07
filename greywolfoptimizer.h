@@ -26,7 +26,7 @@ signals:
 
 private:
     QVariantMap gwo(quint32 max_iter, quint32 num_wolves, quint32 max_m,
-        double lambda, double mu, double r, double c);
+        double lambda, double mu, double r, double c, bool calc_probability, quint32 p_lb = 0, quint32 p_ub = 0);
     QVariantMap analyze(quint32 m, double lambda, double mu,
         bool calc_probability, quint32 p_lb = 0, quint32 p_ub = 0);
 

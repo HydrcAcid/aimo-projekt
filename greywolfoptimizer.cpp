@@ -15,7 +15,8 @@ GreyWolfOptimizer::GreyWolfOptimizer(OptimizationParams* optParams, AnalysisPara
 void GreyWolfOptimizer::startOptimization() {
     (void)QtConcurrent::run([=]() {
         QVariantMap result = gwo(m_optParams->iterMax(), m_optParams->wolfCount(), m_optParams->mMax(),
-                                 m_optParams->lambda(), m_optParams->mu(), m_optParams->r(), m_optParams->c());
+                                 m_optParams->lambda(), m_optParams->mu(), m_optParams->r(), m_optParams->c(),
+                                 m_nlsParams->calcProb(), m_nlsParams->pLB(), m_nlsParams->pUB());
         emit optimizationFinished(result);
     });
 }
@@ -71,7 +72,7 @@ QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, bool
 
 // Do dokonczenia
 QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32 max_m,
-    double lambda, double mu, double r, double c) {
+    double lambda, double mu, double r, double c, bool calc_probability, quint32 p_lb, quint32 p_ub) {
 
     auto *rng = QRandomGenerator::global();
 
@@ -116,7 +117,7 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
     }
 
     m_opt = static_cast<quint32>(std::round(alpha.m));
-    QVariantMap result{analyze(m_opt, lambda, mu, false)};
+    QVariantMap result{analyze(m_opt, lambda, mu, calc_probability, p_lb, p_ub)};
 
     auto val_iter{result.find("n_mean")};
     double n_mean{val_iter->toDouble()};
