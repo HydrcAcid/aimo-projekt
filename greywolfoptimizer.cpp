@@ -76,7 +76,7 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
 
     auto *rng = QRandomGenerator::global();
 
-    // Optymalizacja w jednym wymiarze
+    // Losowe rozmieszczenie wilków
     QVector<Wolf> wolves(num_wolves);
     for(auto &w : wolves) {
         w.m = (double)QRandomGenerator::global()->bounded(1U, max_m);
@@ -91,7 +91,7 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
         alpha.score = beta.score = delta.score = 1e18;
 
         for (auto &w : wolves) {
-            w.m = std::clamp(w.m, 1.0, double(max_m));
+            w.m = std::clamp(int(std::round(w.m)), 1, int(max_m));
             w.score = -objectiveFunction(w.m, rho, c, r);
 
             if (w.score < alpha.score) { delta = beta; beta = alpha; alpha = w; }
@@ -99,9 +99,9 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
             else if (w.score < delta.score) { delta = w; }
         }
 
-        double a = 2.0 - 2.0 * double(i) / double(max_iter);
+        double a = 2.0 * std::exp(-3.0 * i / max_iter);
 
-        // update
+        // Aktualizacja pozycji
         for (auto &w : wolves) {
             auto update = [&](const Wolf &L){
                 double r1 = rng->generateDouble();
@@ -116,6 +116,7 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
         }
     }
 
+    // Analiza zoptymalizowanego systemu
     m_opt = static_cast<quint32>(std::round(alpha.m));
     QVariantMap result{analyze(m_opt, lambda, mu, calc_probability, p_lb, p_ub)};
 

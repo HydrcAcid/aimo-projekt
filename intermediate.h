@@ -24,14 +24,14 @@ inline double calculatePj(int j, double rho, double p0) {
     return std::pow(rho, j) / factorial(j) * p0;
 }
 
+// Funkcja celu do optymalizacji systemu
 inline double objectiveFunction(quint32 m, double rho, double c, double r) {
-    double pm = 1.0;
-    for (int i = 1; i <= m; ++i) {
-        pm = (rho * pm) / (i + rho * pm);
-    }
+    double p0 = calculateP0(m, rho);
+    double pm = calculatePj(m, rho, p0);
     return (r * rho * (1.0 - pm) - c * m);
 }
 
+// Funkcja celu do analizy systemu
 inline double systemAnalysis(quint32 m, double r, double c, double n_mean) {
     return r * n_mean - c * m;
 }
