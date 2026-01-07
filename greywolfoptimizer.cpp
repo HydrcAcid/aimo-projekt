@@ -113,9 +113,6 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
 
             w.m = (update(alpha) + update(beta) + update(delta)) / 3.0;
         }
-
-        // Aktualizacja progressbara
-        emit optimizationProgressChanged(double(i+1) / max_iter);
     }
 
     m_opt = static_cast<quint32>(std::round(alpha.m));

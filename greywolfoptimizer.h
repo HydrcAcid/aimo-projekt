@@ -21,7 +21,6 @@ public:
     Q_INVOKABLE void startAnalysis();
 
 signals:
-    void optimizationProgressChanged(double progress);
     void optimizationFinished(const QVariantMap& result);
     void analysisFinished(const QVariantMap& result);
 
