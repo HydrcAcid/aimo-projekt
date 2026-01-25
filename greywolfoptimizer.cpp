@@ -29,7 +29,6 @@ void GreyWolfOptimizer::startAnalysis() {
     });
 }
 
-// Do dokonczenia
 QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, bool calc_probability, quint32 p_lb, quint32 p_ub) {
     QVariantMap result;
     double rho{lambda / mu};
@@ -70,7 +69,6 @@ QVariantMap GreyWolfOptimizer::analyze(quint32 m, double lambda, double mu, bool
     return result;
 }
 
-// Do dokonczenia
 QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32 max_m,
     double lambda, double mu, double r, double c, bool calc_probability, quint32 p_lb, quint32 p_ub) {
 
@@ -99,7 +97,7 @@ QVariantMap GreyWolfOptimizer::gwo(quint32 max_iter, quint32 num_wolves, quint32
             else if (w.score < delta.score) { delta = w; }
         }
 
-        double a = 2.0 * std::exp(-3.0 * i / max_iter);
+        double a = 2.0 - 2.0 * (i / max_iter);
 
         // Aktualizacja pozycji
         for (auto &w : wolves) {

@@ -121,8 +121,8 @@ ApplicationWindow {
             model: ListModel {
                 ListElement { display: "Nazwa wielkości" }
                 ListElement { display: "Zmienna" }
-                ListElement { display: "System 1" }
-                ListElement { display: "System 2" }
+                ListElement { display: "System 1 (Analiza)" }
+                ListElement { display: "System 2 (Optymalizacja)" }
             }
 
             delegate: Rectangle {
