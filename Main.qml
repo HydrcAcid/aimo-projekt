@@ -200,9 +200,9 @@ ApplicationWindow {
                     readonly property var keyTranslations: {
                         "f_obj": "Wynik funkcji celu",
                         "m_opt": "Optymalna wartość m",
-                        "p0": "Prawdopodobieństwo stanu psutego",
+                        "p0": "Prawdopodobieństwo stanu pustego",
                         "pm": "Prawdopodobieństwo odmowy",
-                        "A": "Bezwzględna zdolnośc obsługi",
+                        "A": "Bezwzględna zdolność obsługi",
                         "q": "Względna zdolność obsługi",
                         "n_mean": "Średnia liczba zgłoszeń w systemie",
                         "m0_mean": "Średnia liczba kanałów obsługujących",
